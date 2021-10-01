@@ -70,3 +70,15 @@ export const logout = catchAsync(async (req, res) => {
         }
     });
 });
+
+export const getUser = catchAsync(async (req, res, next) => {
+    if (req.user) {
+        const exUser = await UserRepository.findUnique({ id: req.user.id });
+        delete exUser['password'];
+        return res
+            .status(200)
+            .send(resFormat.successData(200, '유저 정보 확인 성공', exUser));
+    } else {
+        return res.status(401).json(resFormat.fail(401, '유저 정보 확인 실패'));
+    }
+});
