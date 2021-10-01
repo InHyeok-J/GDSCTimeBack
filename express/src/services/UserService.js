@@ -10,13 +10,17 @@ export const signUp = catchAsync(async (req, res) => {
     });
 
     if (existUserUserId) {
-        return res.status(404).send(resFormat.fail('아이디가 이미 존재합니다'));
+        return res
+            .status(404)
+            .send(resFormat.fail(404, '아이디가 이미 존재합니다'));
     }
     const existUserEmail = await UserRepository.findUnique({
         email: req.body.email,
     });
     if (existUserEmail) {
-        return res.status(404).send(resFormat.fail('이메일이 이미 존재합니다'));
+        return res
+            .status(404)
+            .send(resFormat.fail(404, '이메일이 이미 존재합니다'));
     }
 
     const existUserNicknmae = await UserRepository.findUnique({
@@ -24,14 +28,16 @@ export const signUp = catchAsync(async (req, res) => {
     });
 
     if (existUserNicknmae) {
-        return res.status(404).send(resFormat.fail('닉네임이 이미 존재합니다'));
+        return res
+            .status(404)
+            .send(resFormat.fail(404, '닉네임이 이미 존재합니다'));
     }
 
     req.body.password = await bcrypt.hash(req.body.password, 10);
 
     const user = await UserRepository.create(req.body);
     if (!user) {
-        return res.status(500).send(resFormat.fail('알수 없는 에러'));
+        return res.status(500).send(resFormat.fail(500, '알수 없는 에러'));
     }
     delete user['password'];
     return res
@@ -45,7 +51,7 @@ export const login = catchAsync(async (req, res) => {
             throw new Error('에러');
         }
         if (!user) {
-            return res.status(404).send(resFormat.fail('유저 정보 없습니다'));
+            return res.status(404).send(resFormat.fail(404, info.message));
         }
         req.login(user, (err) => {
             if (err) {
