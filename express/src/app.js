@@ -7,7 +7,7 @@ import cors from 'cors';
 
 import * as ErrorHandler from './middlewares/ErrorHandler';
 import TestController from './controllers/TestController';
-import AuthController from './controllers/AuthController';
+import AuthController from './controllers/UserController';
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.get('/', (req, res, next) => {
 });
 
 app.use('/test', TestController);
-app.use('/auth', AuthController);
+app.use('/api/user', AuthController);
 
 //404Router handler
 app.use(ErrorHandler.routerHanlder);

@@ -17,5 +17,6 @@
     "rules": {
         "no-unreachable":"off",
         "prettier/prettier": "error",
+        "no-unused-vars":"off"
     }
 }
