@@ -2,21 +2,31 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const findByEmail = async (email) => {
-    try {
-        return await prisma.user.findUnique({
-            where: { email },
-        });
-    } catch (err) {
-        console.error(err);
-    }
-};
+// export const findByEmail = async (email) => {
+//     try {
+//         return await prisma.user.findUnique({
+//             where: { email },
+//         });
+//     } catch (err) {
+//         console.error(err);
+//     }
+// };
 
-export const findByNickname = async (nickname) => {
+// export const findByNickname = async (nickname) => {
+//     try {
+//         console.log(nickname);
+//         return await prisma.user.findUnique({
+//             where: { nickname },
+//         });
+//     } catch (err) {
+//         console.error(err);
+//     }
+// };
+
+export const findUnique = async (unique) => {
     try {
-        console.log(nickname);
         return await prisma.user.findUnique({
-            where: { nickname },
+            where: unique,
         });
     } catch (err) {
         console.error(err);

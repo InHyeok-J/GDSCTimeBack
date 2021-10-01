@@ -4,12 +4,15 @@ import morgan from 'morgan';
 import env from './configs';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-
+import passport from 'passport';
+import passportConfig from './configs/passport';
 import * as ErrorHandler from './middlewares/ErrorHandler';
 import TestController from './controllers/TestController';
 import AuthController from './controllers/UserController';
 
 const app = express();
+
+passportConfig(passport);
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -23,6 +26,8 @@ app.use(
         saveUninitialized: false,
     })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', (req, res, next) => {
     res.send('gd');
