@@ -79,12 +79,13 @@ public class UserController {
 
     //회원가입
     @PostMapping("")
-    public BasicResponse signUp(@RequestBody() UserDto.SignUpRequest user){
+    public ResponseEntity<BasicResponse> signUp(@RequestBody() UserDto.SignUpRequest user){
         String message = userService.signUp(user);
         if(message.equals("ok")){
-            return  new SuccessResponse<>(new EmptyJsonResponse());
+            return ResponseEntity.ok(new SuccessResponse<>(new EmptyJsonResponse()));
         }else{
-            return new FailResponse<>(message, new EmptyJsonResponse());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new FailResponse<>(message, new EmptyJsonResponse()));
         }
     }
 
