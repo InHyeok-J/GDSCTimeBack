@@ -32,23 +32,19 @@ public class UserController {
     public ResponseEntity<BasicResponse> getUserInfo(){
         Object id =   httpSession.getAttribute("sessionId");
         if(id==null){
-            return ResponseEntity.ok(
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new FailResponse<>("로그인 필요",new EmptyJsonResponse())
             );
         }
         Optional<UserDto.Response> user = userService.getUser((int)id);
-//        if(user.isPresent()){
-//            return ResponseEntity.ok(new SuccessResponse<>(user.get()));
-//        }else{
-//            return ResponseEntity.ok(
-//                    new FailResponse<>("유저가 없습니다",new EmptyJsonResponse())
-//            );
-//        }// 위처럼 코딩하니깐 아래로 인텔리제이가 바꿔줌;;
-        return user.<ResponseEntity<BasicResponse>>
-                map(response -> ResponseEntity.ok(new SuccessResponse<>(response)))
-                .orElseGet(() -> ResponseEntity.ok(
-                        new FailResponse<>("유저가 없습니다", new EmptyJsonResponse())
-                ));
+        if(user.isPresent()){
+            return ResponseEntity.ok(new SuccessResponse<>(user.get()));
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new FailResponse<>("유저가 없습니다",new EmptyJsonResponse())
+            );
+        }// 위처럼 코딩하니깐 아래로 인텔리제이가 바꿔줌;;
+
     }
 
     // 유저 정보 수정

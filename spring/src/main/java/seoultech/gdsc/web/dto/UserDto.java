@@ -49,6 +49,7 @@ public class UserDto {
         private String email;
         private String name;
         private String nickname;
+        private String major;
         private String isAuth;
         private String profilePic;
     }
