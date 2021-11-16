@@ -27,8 +27,8 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         //path가 중복되는 것은 예외처리로 제외함
         String method = request.getMethod();
-        String rquestUrl = request.getRequestURI();
-        if(Arrays.asList(ExceptionController).contains((method + rquestUrl))){
+        String requestUrl = request.getRequestURI();
+        if(Arrays.asList(ExceptionController).contains((method + requestUrl))){
             return true;
         }
 

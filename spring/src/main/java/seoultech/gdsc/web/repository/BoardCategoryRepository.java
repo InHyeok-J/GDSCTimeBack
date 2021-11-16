@@ -6,4 +6,5 @@ import seoultech.gdsc.web.entity.BoardCategory;
 
 @Repository
 public interface BoardCategoryRepository extends JpaRepository<BoardCategory, Integer> {
+    boolean existsBoardCategoryById(int id);
 }
