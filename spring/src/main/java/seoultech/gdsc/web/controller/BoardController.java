@@ -91,4 +91,9 @@ public class BoardController {
         }
     }
 
+    @GetMapping("/main/myboard")
+    public ResponseEntity<BasicResponse> getMyBoard(){
+        List<BoardDto.ListResponse> result = boardService.getMainBoard();
+        return ResponseEntity.ok(new SuccessResponse<>(result));
+    }
 }

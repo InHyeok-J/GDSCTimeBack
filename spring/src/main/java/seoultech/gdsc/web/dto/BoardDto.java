@@ -23,6 +23,7 @@ public class BoardDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ListResponse{
+        private int id;
         private int boardCategoryId;
         private String title;
         private String content;
@@ -37,6 +38,7 @@ public class BoardDto {
     @AllArgsConstructor
     public static class DetailResponse{
         private int id;
+        private int boardCategoryId;
         private String title;
         private String content;
         private String nickname;
