@@ -7,8 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import seoultech.gdsc.web.dto.BoardDto;
 import seoultech.gdsc.web.dto.CommentDto;
-import seoultech.gdsc.web.entity.Board;
-import seoultech.gdsc.web.entity.Comment;
 import seoultech.gdsc.web.response.BasicResponse;
 import seoultech.gdsc.web.response.FailResponse;
 import seoultech.gdsc.web.response.SuccessResponse;
@@ -43,7 +41,7 @@ public class BoardController {
 
     // 글 하나 조회
     @GetMapping("/detail/{id}")
-    public ResponseEntity<BasicResponse> getboard(@PathVariable() int id){
+    public ResponseEntity<BasicResponse> getBoard(@PathVariable() int id){
         Optional<BoardDto.DetailResponse> board = boardService.getBoard(id);
         if(board.isPresent()){
             return ResponseEntity.ok(new SuccessResponse<>(board.get()));
@@ -56,7 +54,7 @@ public class BoardController {
 
     // 카테고리 글 전체 조회
     @GetMapping("")
-    public ResponseEntity<BasicResponse> getboardList(@RequestParam() int category){
+    public ResponseEntity<BasicResponse> getBoardList(@RequestParam() int category){
         Optional<List<BoardDto.ListResponse>> boardList = boardService.getBoardList(category);
         if(boardList.isPresent()){
             return ResponseEntity.ok(new SuccessResponse<>(boardList.get()));
@@ -94,6 +92,26 @@ public class BoardController {
     @GetMapping("/main/myboard")
     public ResponseEntity<BasicResponse> getMyBoard(){
         List<BoardDto.ListResponse> result = boardService.getMainBoard();
+        return ResponseEntity.ok(new SuccessResponse<>(result));
+    }
+
+    @GetMapping("/main/hot")
+    public ResponseEntity<BasicResponse> getHotBoard(){
+        List<BoardDto.MainHotResponse> result = boardService.getHotBoard();
+        return ResponseEntity.ok(new SuccessResponse<>(result));
+    }
+
+    //실시간게시글 조회
+    @GetMapping("/main/realtime")
+    public ResponseEntity<BasicResponse> getRealTime(){
+        List<BoardDto.RealtimeResponse> result = boardService.getRealTime();
+        return ResponseEntity.ok(new SuccessResponse<>(result));
+    }
+
+    //프론트 board 페이지 진로/홍보용
+    @GetMapping("/main/filter")
+    public ResponseEntity<BasicResponse> getFilterBoard(@RequestParam() int category){
+        BoardDto.FilterResponse result = boardService.getFilterBoard(category);
         return ResponseEntity.ok(new SuccessResponse<>(result));
     }
 }

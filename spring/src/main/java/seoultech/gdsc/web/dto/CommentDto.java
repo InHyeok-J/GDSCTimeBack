@@ -29,5 +29,6 @@ public class CommentDto {
         private int likeNum;
         private int userId;
         private String createdAt;
+        private boolean isOwner;
     }
 }

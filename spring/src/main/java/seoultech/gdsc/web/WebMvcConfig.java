@@ -14,7 +14,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static final List<String> notAuthUrlList =
             Arrays.asList("/api/user/login","/api/user","/api/user");
     private static final List<String> AuthUrlList =
-            Arrays.asList("/api/user/logout","/api/user","/api/board/comment","/api/board");
+            Arrays.asList("/api/user/logout","/api/user","/api/board/comment",
+                    "/api/board","/api/like","/api/message","/api/message/detail");
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){

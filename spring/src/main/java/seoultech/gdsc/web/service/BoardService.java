@@ -2,6 +2,7 @@ package seoultech.gdsc.web.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import seoultech.gdsc.web.dto.BoardDto;
 import seoultech.gdsc.web.entity.Board;
@@ -11,6 +12,8 @@ import seoultech.gdsc.web.repository.BoardCategoryRepository;
 import seoultech.gdsc.web.repository.BoardRepository;
 import seoultech.gdsc.web.repository.UserRepository;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,6 +55,7 @@ public class BoardService {
         List<BoardDto.ListResponse> response = findBoard.stream().map(item->{
             BoardDto.ListResponse res = modelMapper.map(item, BoardDto.ListResponse.class);
             res.setBoardCategoryId(item.getCategory().getId());
+
             return res;
         }).collect(Collectors.toList());
 
@@ -79,9 +83,65 @@ public class BoardService {
         List<Board> findMainBoard = boardRepository.findMainBoard();
         List<BoardDto.ListResponse> response = findMainBoard.stream().map(board->{
             BoardDto.ListResponse res = modelMapper.map(board,BoardDto.ListResponse.class);
+
             res.setBoardCategoryId(board.getCategory().getId());
             return res;
         }).collect(Collectors.toList());
         return response;
     }
+
+    public List<BoardDto.MainHotResponse>  getHotBoard(){
+        List<Board> findBoard = boardRepository
+                .findAllByIsHotTrueOrderByCreatedAtDesc(Pageable.ofSize(2));
+        List<BoardDto.MainHotResponse> response = findBoard.stream().map(board->{
+            BoardDto.MainHotResponse res = modelMapper.map(board, BoardDto.MainHotResponse.class);
+            return res;
+        }).collect(Collectors.toList());
+        return response;
+    }
+
+    public List<BoardDto.RealtimeResponse> getRealTime(){
+        LocalDateTime currentDate = LocalDateTime.now();
+        List<Board> findBoard = boardRepository
+                .findAllByIsHotTrueAndCreatedAtGreaterThanEqualOrderByCreatedAtDesc(
+                        currentDate.minusDays(1));
+        List<BoardDto.RealtimeResponse> responses = findBoard.stream()
+                .sorted(Comparator.comparing((Board b)-> b.getCommentNum()+b.getLikeNum()).reversed())
+                .limit(2)
+                .map(board->{
+            BoardDto.RealtimeResponse res = modelMapper.map(board, BoardDto.RealtimeResponse.class);
+            String nicknameChange =  board.getIsSecret() ?
+                            "익명" : board.getUser().getNickname();
+            String profileStr = board.getIsSecret() ?
+                            "익명이미지" : board.getUser().getProfilePic();
+            res.setCategoryId(board.getCategory().getId());
+            res.setNickname(nicknameChange);
+            res.setProfilePic(profileStr);
+            return res;
+        }).collect(Collectors.toList());
+        return responses;
+    }
+
+    public BoardDto.FilterResponse getFilterBoard(int id){
+        List<Board> findHotBoard = boardRepository
+                .findAllByCategoryIdAndIsHotTrueOrderByCreatedAtDesc(id,Pageable.ofSize(2));
+        List<Board> findLastBoard = boardRepository
+                .findAllByCategoryIdAndIsHotFalseOrderByCreatedAtDesc(id,Pageable.ofSize(2));
+        BoardDto.FilterResponse response = new BoardDto.FilterResponse();
+
+        response.setHotBoard(findHotBoard.stream().map(board->{
+               BoardDto.ListResponse res = modelMapper.map(board,BoardDto.ListResponse.class);
+               res.setBoardCategoryId(board.getCategory().getId());
+               return res;
+        }).collect(Collectors.toList()));
+
+        response.setLastedBoard(findLastBoard.stream().map(board->{
+            BoardDto.ListResponse res = modelMapper.map(board, BoardDto.ListResponse.class);
+            res.setBoardCategoryId(board.getCategory().getId());
+            return res;
+        }).collect(Collectors.toList()));
+
+        return response;
+    }
+
 }
